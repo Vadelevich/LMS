@@ -1,0 +1,42 @@
+[
+  {
+    "model": "training.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "pay_course": 2,
+      "summ": 1000,
+      "payment_method": "cashless"
+    }
+  },
+  {
+    "model": "training.payment",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "pay_lesson": 4,
+      "summ": 100,
+      "payment_method": "cash"
+    }
+  },
+  {
+    "model": "training.payment",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "pay_lesson": 3,
+      "summ": 200,
+      "payment_method": "cashless"
+    }
+  },
+  {
+    "model": "training.payment",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "pay_course": 3,
+      "summ": 1000,
+      "payment_method": "cash"
+    }
+  }
+]

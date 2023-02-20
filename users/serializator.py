@@ -1,21 +1,29 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from users.models import User
+from users.models import User, Payment
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        exclude = ['user',]
 
 
 class UserSerializer(serializers.ModelSerializer):
+    history = PaymentSerializer(source='payment_set',many=True,)
 
     class Meta:
         model = User
         fields = (
             'email',
             'password',
+            'history',
         )
 
     def create(self, validated_data):
         """Переопределим, чтобы хешировался пароль"""
-        return User.objects.create(email=validated_data['email'],password=make_password(validated_data['password']))
+        return User.objects.create(email=validated_data['email'], password=make_password(validated_data['password']))
 
     def update(self, instance, validated_data):
         """ Изменим пароль """

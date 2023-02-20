@@ -1,6 +1,6 @@
 [
   {
-    "model": "training.payment",
+    "model": "users.payment",
     "pk": 1,
     "fields": {
       "user": 1,
@@ -10,7 +10,7 @@
     }
   },
   {
-    "model": "training.payment",
+    "model": "users.payment",
     "pk": 2,
     "fields": {
       "user": 2,
@@ -20,7 +20,7 @@
     }
   },
   {
-    "model": "training.payment",
+    "model": "users.payment",
     "pk": 3,
     "fields": {
       "user": 3,
@@ -30,7 +30,7 @@
     }
   },
   {
-    "model": "training.payment",
+    "model": "users.payment",
     "pk": 4,
     "fields": {
       "user": 4,

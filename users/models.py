@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
@@ -40,6 +41,30 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+
+class Payment(models.Model):
+    """ Платежи, поля:
+    - пользователь
+    - дата оплаты
+    - оплаченный курс или урок
+    - сумма оплаты
+    - способ оплаты: наличные или перевод на счет
+    """
+    CASH = 'cash'
+    CASHLESS = 'cashless'
+    STATUS_PAY = (
+        ('cash', 'наличные'),
+        ('cashless', 'перевод на счет')
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             verbose_name='пользователь', **NULLABLE)
+    date_pay = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты', **NULLABLE)
+    pay_course = models.ForeignKey('training.Course',on_delete=models.CASCADE, verbose_name='оплаченный курс', **NULLABLE)
+    pay_lesson = models.ForeignKey('training.Lesson',on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
+    summ = models.FloatField(verbose_name='сумма оплаты', default=0)
+    payment_method = models.CharField(choices=STATUS_PAY, default=CASH,verbose_name='способ оплаты:',max_length=15)
 
 
 

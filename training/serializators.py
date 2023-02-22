@@ -15,11 +15,11 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    lesson_count = serializers.SerializerMethodField()
+    # lesson_count = serializers.SerializerMethodField()
 
     # Для сериализатора для модели курса реализуйте поле вывода уроков.
 
-    lesson = LessonSerializer(source='lesson_set', many=True)
+    # lesson = LessonSerializer(source='lesson_set', many=True)
 
     class Meta:
         model = Course
@@ -27,8 +27,8 @@ class CourseSerializer(serializers.ModelSerializer):
             'title',
             'image',
             'description',
-            'lesson_count',
-            'lesson',
+            # 'lesson_count',
+            # 'lesson',
         )
 
     def get_lesson_count(self, instance):

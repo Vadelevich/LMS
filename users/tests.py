@@ -19,7 +19,6 @@ class UserTestCase(APITestCase):
         self.client.credentials(HTTP_AUTORIZATION=f"Bearer {self.access_token}")
         self.client.force_authenticate(user=data_user_1)
 
-
     def test_create_user(self):
         response = self.client.post(path="/users/create_user/", data=data_user_2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -45,7 +44,7 @@ class UserTestCase(APITestCase):
 
     def test_detail_user(self):
         self.test_create_user()
-        response = self.client.get('/users/detail_user/1/',data_user_2)
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        response = self.client.get('/users/detail_user/1/', data_user_2)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get('/users/detail_user/2/', data_user_2)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

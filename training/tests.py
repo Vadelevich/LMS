@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -91,16 +92,17 @@ class LessonTestCase(APITestCase):
             "title": "new",
             "link_video": "https: // www.youtube.com"
         })
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
-        expected_data = {"title":"new","image":None,"description":None,"link_video":"https: // www.youtube.com"}
-        self.assertEqual(response.json(),expected_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_data = {"title": "new", "image": None, "description": None, "link_video": "https: // www.youtube.com"}
+        self.assertEqual(response.json(), expected_data)
 
     def test_lesson_list(self):
         self.test_lesson_create()
         response = self.client.get('/training/list_lesson/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expected_data = [{"title":"new","image":None,"description":None,"link_video":"https: // www.youtube.com"}]
-        self.assertEqual(response.json(),expected_data)
+        expected_data = [
+            {"title": "new", "image": None, "description": None, "link_video": "https: // www.youtube.com"}]
+        self.assertEqual(response.json(), expected_data)
 
     def test_lesson_delete(self):
         self.test_lesson_create()
@@ -111,8 +113,41 @@ class LessonTestCase(APITestCase):
         self.test_lesson_create()
         response = self.client.get('/training/retrieve_lesson/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expected_data = {"title":"new","image":None,"description":None,"link_video":"https: // www.youtube.com"}
+        expected_data = {"title": "new", "image": None, "description": None, "link_video": "https: // www.youtube.com"}
         self.assertEqual(response.json(), expected_data)
 
 
+class SubscriptionTestCase(APITestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.user = User(email="foo@bar.com")
+        password = "some_password"
+        self.user.set_password(password)
+        self.user.save()
 
+        response = self.client.post("/users/api/token/", {"email": "foo@bar.com", "password": "some_password"})
+        self.access_token = response.json().get("access")
+        self.client.credentials(HTTP_AUTORIZATION=f"Bearer {self.access_token}")
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post("/training/create_course/", {"title": "test"})
+
+    def test_subscription_create(self):
+        response = self.client.post("/training/create_subscr/", {"course_id": 1})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        expected_data = {
+            "id": 1,
+            "status": "active",
+            "course_id": 1
+        }
+        self.assertEqual(response.json(), expected_data)
+
+    def test_subscription_delete(self):
+        self.test_subscription_create()
+        response = self.client.put("/training/delete_subscr/1/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_data = {
+            "id": 1,
+            "status": "inactive",
+            "course_id": 1
+        }

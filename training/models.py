@@ -31,10 +31,24 @@ class Lesson(models.Model):
     title = models.CharField(max_length=150, verbose_name='Название урока', )
     description = models.TextField(verbose_name='описание урока', **NULLABLE)
     image = models.ImageField(upload_to='lesson/', verbose_name='картинка для урока', **NULLABLE)
-    link_video = models.FileField(upload_to='lessons_video/', verbose_name='видео', **NULLABLE)
+    link_video = models.CharField(max_length=250, verbose_name='видео', **NULLABLE)
     course_title = models.ForeignKey('training.Course', verbose_name='урок из курса', on_delete=models.SET_NULL,
                                      **NULLABLE)
     date_create = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
 
 
+class Subscription(models.Model):
+    """Подписки на обновления курса"""
+    STATUSE_ACTIVE = 'active'
+    STATUSE_INACTIVE = 'inactive'
+    STATUSES = (
+        ('active', 'Вы подписанны на курс'),
+        ('inactive', 'Вы не подписаны на курс'),
+    )
+
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
+                                **NULLABLE)
+    course_id = models.ForeignKey('training.Course', verbose_name='курс', on_delete=models.CASCADE, **NULLABLE)
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name='дата создания подписки')
+    status = models.CharField(max_length=15, choices=STATUSES, verbose_name='статус подписки', default=STATUSE_INACTIVE)

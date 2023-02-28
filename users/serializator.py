@@ -7,18 +7,18 @@ from users.models import User, Payment
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        exclude = ['user',]
+        exclude = ['user', ]
 
 
 class UserSerializer(serializers.ModelSerializer):
-    history = PaymentSerializer(source='payment_set',many=True,)
+    # history = PaymentSerializer(source='payment_set',many=True,)
 
     class Meta:
         model = User
         fields = (
             'email',
             'password',
-            'history',
+            # 'history',
         )
 
     def create(self, validated_data):
@@ -34,3 +34,9 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
+
+
+class UserRetrieve(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'date_joined', 'is_staff')

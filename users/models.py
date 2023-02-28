@@ -5,6 +5,7 @@ from django.db import models
 
 from training.models import NULLABLE
 
+
 class CustomUserManager(UserManager):
     def create_superuser(self, email=None, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
@@ -61,10 +62,9 @@ class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              verbose_name='пользователь', **NULLABLE)
     date_pay = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты', **NULLABLE)
-    pay_course = models.ForeignKey('training.Course',on_delete=models.CASCADE, verbose_name='оплаченный курс', **NULLABLE)
-    pay_lesson = models.ForeignKey('training.Lesson',on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
+    pay_course = models.ForeignKey('training.Course', on_delete=models.CASCADE, verbose_name='оплаченный курс',
+                                   **NULLABLE)
+    pay_lesson = models.ForeignKey('training.Lesson', on_delete=models.CASCADE, verbose_name='оплаченный урок',
+                                   **NULLABLE)
     summ = models.FloatField(verbose_name='сумма оплаты', default=0)
-    payment_method = models.CharField(choices=STATUS_PAY, default=CASH,verbose_name='способ оплаты:',max_length=15)
-
-
-
+    payment_method = models.CharField(choices=STATUS_PAY, default=CASH, verbose_name='способ оплаты:', max_length=15)

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -50,5 +51,4 @@ class Subscription(models.Model):
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
                                 **NULLABLE)
     course_id = models.ForeignKey('training.Course', verbose_name='курс', on_delete=models.CASCADE, **NULLABLE)
-    date_create = models.DateTimeField(auto_now_add=True, verbose_name='дата создания подписки')
     status = models.CharField(max_length=15, choices=STATUSES, verbose_name='статус подписки', default=STATUSE_INACTIVE)

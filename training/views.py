@@ -2,8 +2,9 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from training.models import Course, Lesson, Subscription
-from training.permissions import ManagerPermissionCreateDestroy, ManagerOrOwnerPermissionsAll
-from training.serializators import CourseSerializer, LessonSerializer, SubscriptionSerializer
+from training.permissions import ModeratorPermissionCourse, ModeratorPermissionCourseCreate, \
+    ModeratorPermissionLessonCreate, ModeratorPermissionLesson
+from training.serializators import CourseSerializer, LessonSerializer, SubscriptionSerializer, CourseSerializerDetail
 
 
 class CourseListAPIView(generics.ListAPIView):
@@ -19,7 +20,7 @@ class CourseListAPIView(generics.ListAPIView):
 
 class CourseCreateAPIView(generics.CreateAPIView):
     serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated, ManagerPermissionCreateDestroy]  # Запрещает менеджеру
+    permission_classes = [IsAuthenticated, ModeratorPermissionCourseCreate]  # Запрещает менеджеру
 
     def perform_create(self, serializer):
         """ Переопределяем, чтобы сохранился user_create"""
@@ -29,19 +30,19 @@ class CourseCreateAPIView(generics.CreateAPIView):
 class CourseUpdateAPIView(generics.UpdateAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
-    permission_classes = [IsAuthenticated, ManagerOrOwnerPermissionsAll]  # Можно или менеджеру или создателю
+    permission_classes = [IsAuthenticated,ModeratorPermissionCourse]  # Можно или менеджеру или создателю
 
 
 class CourseRetrieveAPIView(generics.RetrieveAPIView):
-    serializer_class = CourseSerializer
+    serializer_class = CourseSerializerDetail
     queryset = Course.objects.all()
-    permission_classes = [IsAuthenticated, ManagerOrOwnerPermissionsAll]  # Можно или менеджеру или создателю
+    permission_classes = [IsAuthenticated, ModeratorPermissionCourse]  # Можно или менеджеру или создателю
 
 
 class CourseDestroyAPIView(generics.DestroyAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
-    permission_classes = [IsAuthenticated, ManagerPermissionCreateDestroy]  # Запрещает менеджеру
+    permission_classes = [IsAuthenticated, ModeratorPermissionCourse]  # Запрещает менеджеру
 
 
 class LessonListAPIView(generics.ListAPIView):
@@ -57,7 +58,7 @@ class LessonListAPIView(generics.ListAPIView):
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, ManagerPermissionCreateDestroy]  # Запрещает менеджеру
+    permission_classes = [IsAuthenticated, ModeratorPermissionLessonCreate]  # Запрещает менеджеру
 
     def perform_create(self, serializer):
         """ Переопределяем, чтобы сохранился user_create"""
@@ -67,19 +68,19 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, ManagerOrOwnerPermissionsAll]  # Можно или менеджеру или создателю
+    permission_classes = [IsAuthenticated, ModeratorPermissionLesson]  # Можно или менеджеру или создателю
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, ManagerOrOwnerPermissionsAll]  # Можно или менеджеру или создателю
+    permission_classes = [IsAuthenticated, ModeratorPermissionLesson]  # Можно или менеджеру или создателю
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, ManagerPermissionCreateDestroy]  # Запрещает менеджеру
+    permission_classes = [IsAuthenticated, ModeratorPermissionLesson]  # Запрещает менеджеру
 
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):

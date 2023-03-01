@@ -1,4 +1,3 @@
-from django.utils import timezone
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -7,16 +6,16 @@ from users.models import User
 
 class CourseTestCaseUser(APITestCase):
     def setUp(self) -> None:
+        # У всех пользователей должен быть 403 статус код, потому что  нет прав (мы использовали has_permission  метод )
+        # Как исправить 403 ошибку не исправляя permissions.py, это идеальный вариант Олега ?
         super().setUp()
         self.user = User(email="foo@bar.com")
-        password = "some_password"
-        self.user.set_password(password)
+        self.user.set_password("some_password")
         self.user.save()
 
         response = self.client.post("/users/api/token/", {"email": "foo@bar.com", "password": "some_password"})
         self.access_token = response.json().get("access")
         self.client.credentials(HTTP_AUTORIZATION=f"Bearer {self.access_token}")
-        self.client.force_authenticate(user=self.user)
 
     def test_course_create(self):
         response = self.client.post("/training/create_course/", {"title": "test"})
@@ -68,14 +67,12 @@ class LessonTestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = User(email="foo@bar.com")
-        password = "some_password"
-        self.user.set_password(password)
+        self.user.set_password("some_password")
         self.user.save()
 
         response = self.client.post("/users/api/token/", {"email": "foo@bar.com", "password": "some_password"})
         self.access_token = response.json().get("access")
         self.client.credentials(HTTP_AUTORIZATION=f"Bearer {self.access_token}")
-        self.client.force_authenticate(user=self.user)
 
     def test_lesson_create(self):
         response = self.client.post("/training/create_lesson/", {
@@ -121,14 +118,12 @@ class SubscriptionTestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = User(email="foo@bar.com")
-        password = "some_password"
-        self.user.set_password(password)
+        self.user.set_password("some_password")
         self.user.save()
 
         response = self.client.post("/users/api/token/", {"email": "foo@bar.com", "password": "some_password"})
         self.access_token = response.json().get("access")
         self.client.credentials(HTTP_AUTORIZATION=f"Bearer {self.access_token}")
-        self.client.force_authenticate(user=self.user)
 
         response = self.client.post("/training/create_course/", {"title": "test"})
 
@@ -143,7 +138,6 @@ class SubscriptionTestCase(APITestCase):
         self.assertEqual(response.json(), expected_data)
 
     def test_subscription_delete(self):
-        self.test_subscription_create()
         response = self.client.put("/training/delete_subscr/1/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected_data = {
@@ -151,3 +145,4 @@ class SubscriptionTestCase(APITestCase):
             "status": "inactive",
             "course_id": 1
         }
+        self.assertEqual(response.json(), expected_data)

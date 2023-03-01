@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from training.models import Course
-
 
 class LinkValidator:
     def __init__(self, field):

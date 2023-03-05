@@ -5,6 +5,7 @@ from training.models import Course, Lesson, Subscription
 from training.permissions import ModeratorPermissionCourse, ModeratorPermissionCourseCreate, \
     ModeratorPermissionLessonCreate, ModeratorPermissionLesson
 from training.serializators import CourseSerializer, LessonSerializer, SubscriptionSerializer, CourseSerializerDetail
+from training.tasks import check_update_course
 
 
 class CourseListAPIView(generics.ListAPIView):
@@ -31,6 +32,11 @@ class CourseUpdateAPIView(generics.UpdateAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated,ModeratorPermissionCourse]  # Можно или менеджеру или создателю
+
+    def perform_update(self, serializer):
+        self.object = serializer.save()
+        check_update_course.delay(self.object.pk)
+
 
 
 class CourseRetrieveAPIView(generics.RetrieveAPIView):
@@ -69,6 +75,8 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, ModeratorPermissionLesson]  # Можно или менеджеру или создателю
+
+
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):

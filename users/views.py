@@ -1,3 +1,6 @@
+import hashlib
+import json
+
 import requests
 from django.conf import settings
 from django.shortcuts import render
@@ -7,8 +10,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from training.models import Course
-from users.models import User, Payment
+from training.models import Course, Subscription
+from users.models import User, Payment, PaymentLog
 from users.permissions import UserUpdatePermissions
 from users.serializator import UserSerializer, UserRetrieve
 
@@ -53,6 +56,7 @@ class PaymentTinkoffApiView(APIView):
 
         payment = Payment.objects.create(user=self.request.user, pay_course=course_item.id, summ=course_item.price,
                                          payment_method=Payment.CASHLESS)
+        user = User.objects.filter(email=self.request.user).first()
 
         data_for_request = {
             "TerminalKey": f'{settings.TERMINAL_KEY}',
@@ -61,10 +65,10 @@ class PaymentTinkoffApiView(APIView):
             "Description": "Образовательный курс",
             "DATA": {
                 "Phone": "+71234567890",
-                "Email": "test@test.ru"
+                "Email": user.email
             },
             "Receipt": {
-                "Email": "test@test.ru",
+                "Email": user.email,
                 "Phone": "+79031234567",
                 "EmailCompany": "b@test.ru",
                 "Taxation": "osn",
@@ -85,4 +89,32 @@ class PaymentTinkoffApiView(APIView):
 
         response = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data_for_request)
 
-        return Response(response.json()['PaymentURL'])
+        subscription = Subscription.objects.create(user_id=self.request.user, course_id=course_item,
+                                                   status=Subscription.STATUSE_ACTIVE)
+        paymentlog = PaymentLog.objects.create(Description=data_for_request.get('Description'), **response.json())
+
+        return Response(response.json())
+
+
+class PaymentGetStateAPIView(APIView):
+
+    def get(self, *args, **kwargs):
+        payment_pk = kwargs.get('pk')
+        payment_item = get_object_or_404(PaymentLog, pk=payment_pk)
+
+        str_for_token = str(settings.TERMINAL_PASSWORD) + str(payment_item.PaymentId) + str(settings.TERMINAL_KEY)
+        token = hashlib.sha256(str_for_token.encode())
+        token = token.hexdigest()
+
+        # tokentr = token[1]["Password"] + x["PaymentId"] + token[0]["TerminalKey"]
+
+        data_for_request = {
+            "TerminalKey": settings.TERMINAL_KEY,
+            "PaymentId": payment_item.PaymentId,
+            "Token": token
+        }
+
+        responce = requests.post('https://securepay.tinkoff.ru/v2/GetState', json=data_for_request)
+        data_check = PaymentLog.objects.filter(check_status=None)
+        print(data_check)
+        return Response(responce.json())

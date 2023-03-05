@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_celery_beat',
     'training',
     'users',
 ]
@@ -144,7 +145,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ]
 }
 SIMPLE_JWT = {
@@ -195,7 +196,12 @@ CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 
 #PAYMENT
 TERMINAL_PASSWORD = os.getenv('TERMINAL_PASSWORD')
-PASSWORD = os.getenv('PASSWORD')
-
 YOOMONEY_WALLET = os.getenv('YOOMONEY_WALLET')
 TERMINAL_KEY = os.getenv('TERMINAL_KEY')
+
+#SEND_MAIL
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True

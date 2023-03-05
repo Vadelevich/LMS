@@ -17,6 +17,7 @@ class Course(models.Model):
     description = models.TextField(verbose_name='описание курса', **NULLABLE)
     date_create = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
+    price = models.FloatField(default=100, verbose_name='цена курса')
 
 
 class Lesson(models.Model):

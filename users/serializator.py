@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 from rest_framework import serializers
 
 from users.models import User, Payment
@@ -7,7 +8,13 @@ from users.models import User, Payment
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        exclude = ['user', ]
+        # exclude = ['user', ]
+        fields = '__all__'
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,7 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Переопределим, чтобы хешировался пароль"""
-        return User.objects.create(email=validated_data['email'], password=make_password(validated_data['password']))
+        new_user = User.objects.create(email=validated_data['email'], password=make_password(validated_data['password']),)
+        new_user.groups.add(1)# Добавляем в группу пользователей
+
+        return new_user
 
     def update(self, instance, validated_data):
         """ Изменим пароль """
@@ -40,3 +50,4 @@ class UserRetrieve(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'date_joined', 'is_staff')
+

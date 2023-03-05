@@ -186,3 +186,11 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+#PAYMENT
+TERMINAL_PASSWORD = os.getenv('TERMINAL_PASSWORD')
+PASSWORD = os.getenv('PASSWORD')
+
+YOOMONEY_WALLET = os.getenv('YOOMONEY_WALLET')
+TERMINAL_KEY = os.getenv('TERMINAL_KEY')

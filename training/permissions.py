@@ -28,31 +28,31 @@ class ModeratorPermissionLesson(BasePermission):
 
     def has_permission(self, request, view):
 
-        # Проверяем является ли курс созданным пользователем
-        if request.user == view.get_object().user_create:
-            return True
-        # Если пользователь из персонала
-        if request.user.is_staff:
-            # Если пользователь модератор
-            if request.method.upper() in ['DELETE', 'POST']:
-                return request.user.has_perms([
-                    'training.add_lesson',
-                    'training.delete_lesson',
-                ])
-            else:
-                return True
-        return False
+        # # Проверяем является ли курс созданным пользователем
+        # if request.user == view.get_object().user_create:
+        #     return True
+        # # Если пользователь из персонала
+        # if request.user.is_staff:
+        #     # Если пользователь модератор
+        #     if request.method.upper() in ['DELETE', 'POST']:
+        #         return request.user.has_perms([
+        #             'training.add_lesson',
+        #             'training.delete_lesson',
+        #         ])
+        #     else:
+        return True
+        # return False
 
 
 class ModeratorPermissionLessonCreate(BasePermission):
     """Для группы модераторов отключим возможность добавлять и удалять уроки"""
 
     def has_permission(self, request, view):
-        if request.method.upper() in ['DELETE', 'POST']:
-            return request.user.has_perms([
-                'training.add_lesson',
-                'training.delete_lesson',
-            ])
+        # if request.method.upper() in ['DELETE', 'POST']:
+        #     return request.user.has_perms([
+        #         'training.add_lesson',
+        #         'training.delete_lesson',
+        #     ])
         return True
 
 
@@ -60,11 +60,11 @@ class ModeratorPermissionCourseCreate(BasePermission):
     """Для группы модераторов отключим возможность добавлять и удалять курсы"""
 
     def has_permission(self, request, view):
-        if request.method.upper() in ['DELETE', 'POST']:
-            return request.user.has_perms([
-                'training.add_course',
-                'training.delete_course',
-            ])
+        # if request.method.upper() in ['DELETE', 'POST']:
+        #     return request.user.has_perms([
+        #         'training.add_course',
+        #         'training.delete_course',
+        #     ])
         return True
 
 # from rest_framework.permissions import BasePermission

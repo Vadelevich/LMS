@@ -62,9 +62,13 @@ class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              verbose_name='пользователь', **NULLABLE)
     date_pay = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты', **NULLABLE)
-    pay_course = models.ForeignKey('training.Course', on_delete=models.CASCADE, verbose_name='оплаченный курс',
-                                   **NULLABLE)
-    pay_lesson = models.ForeignKey('training.Lesson', on_delete=models.CASCADE, verbose_name='оплаченный урок',
-                                   **NULLABLE)
+    pay_course = models.IntegerField(**NULLABLE,verbose_name='оплаченные курсы')
     summ = models.FloatField(verbose_name='сумма оплаты', default=0)
     payment_method = models.CharField(choices=STATUS_PAY, default=CASH, verbose_name='способ оплаты:', max_length=15)
+
+
+#Todo: Доделать модель для ответа оплаты
+
+
+
+

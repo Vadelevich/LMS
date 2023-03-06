@@ -79,8 +79,6 @@ class PaymentLog(models.Model):
     OrderId = models.CharField(max_length=100,**NULLABLE)
     Amount = models.PositiveBigIntegerField(default=0,**NULLABLE)
     PaymentURL = models.CharField(max_length=500,**NULLABLE)
-    Description = models.CharField(max_length=500,**NULLABLE)
-    check_status = models.CharField(**NULLABLE,max_length=50)
 
 
 

@@ -91,7 +91,8 @@ class PaymentTinkoffApiView(APIView):
 
         subscription = Subscription.objects.create(user_id=self.request.user, course_id=course_item,
                                                    status=Subscription.STATUSE_ACTIVE)
-        paymentlog = PaymentLog.objects.create(Description=data_for_request.get('Description'), **response.json())
+        paymentlog = PaymentLog.objects.create(**response.json())
+
 
         return Response(response.json())
 
@@ -115,6 +116,6 @@ class PaymentGetStateAPIView(APIView):
         }
 
         responce = requests.post('https://securepay.tinkoff.ru/v2/GetState', json=data_for_request)
-        data_check = PaymentLog.objects.filter(check_status=None)
+        data_check = PaymentLog.objects.filter(Status='NEW')
         print(data_check)
         return Response(responce.json())

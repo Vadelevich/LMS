@@ -17,6 +17,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 # Используется для проверки, что selery работает
-# @app.task(bind=True)
-# def debug_task(self):
-#     print(f'Request: {self.request!r}')
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')

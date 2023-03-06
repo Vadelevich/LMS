@@ -23,9 +23,9 @@ def check_update_course(course_pk):
         )
         print(f'Письмо было отправлено {item_subscription.user_id}')
 
-
+@shared_task
 def check_status():
-    data_check = PaymentLog.objects.filter(check_status=None)
+    data_check = PaymentLog.objects.filter(Status='NEW')
     print(data_check)
     if data_check.exists():
         for data_item in data_check:
@@ -40,7 +40,7 @@ def check_status():
             }
             responce = requests.post('https://securepay.tinkoff.ru/v2/GetState', json=data_for_request)
             print(responce.json())
-            data_item.check_status = responce.json()['Status']
+            data_item.Status = responce.json()['Status']
             data_item.save()
             print("ok")
 

@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework.routers import DefaultRouter
 
 from training.views import LessonListAPIView, LessonCreateAPIView, LessonUpdateAPIView, \
     LessonDestroyAPIView, LessonRetrieveAPIView, CourseListAPIView, CourseCreateAPIView, CourseUpdateAPIView, \

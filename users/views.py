@@ -1,6 +1,4 @@
 import hashlib
-import json
-
 import requests
 from django.conf import settings
 from django.shortcuts import render
@@ -98,6 +96,7 @@ class PaymentTinkoffApiView(APIView):
 
 
 class PaymentGetStateAPIView(APIView):
+    permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
         payment_pk = kwargs.get('pk')
